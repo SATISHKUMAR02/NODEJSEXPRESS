@@ -1,0 +1,100 @@
+so for dev depencency => npm i axios -dat
+for oroduction npm i uuid , just like a normal dependcy
+
+
+
+
+
+
+building a web server 
+
+// myEmitter.on('log',(msg)=>logEvents(msg));
+
+
+// setTimeout(()=>{
+//     myEmitter.emit('log','Log Event Emitted');
+// },2000)
+
+
+
+
+
+// ============================================================================================================FILE OPERATIONS 
+// //const fs = require('fs');
+// const fsPromises = require('fs').promises;
+// const path = require('path');
+// const {v4:uuid} = require('uuid');
+// const {format} = require('date-fns');
+// // reading a file => for reading a file , utf-8 should be mentioned
+// // try {
+// //     //const data = fs.readFileSync('./files/starters.txt', 'utf-8');
+// //     const data = fs.readFileSync(path.join(__dirname, 'files', 'starter.txt'));
+// //     console.log(data.toString());
+// // } catch (err) {
+// //     console.error(err);
+// // }
+// const fileOps = async () => {
+//     try {
+//         const data = await fsPromises.readFile(path.join(__dirname, 'files', 'starter.txt'), 'utf-8');
+//         console.log(data);
+//         await fsPromises.writeFile(path.join(__dirname, 'files', 'promiseWrite.txt'), data);
+//         await fsPromises.appendFile(path.join(__dirname, 'files', 'promiseWrite.txt'), '\n dat appended');
+//         await fsPromises.rename(path.join(__dirname, 'files', 'promiseWrite.txt'), path.join(__dirname, 'files', 'newPromiseWrite'));
+//         // const newData = await fsPromises.readFile(path.join(__dirname, 'files', 'newPromiseWrite.txt'), 'utf-8');
+//         // console.log(newData);
+//         // await fsPromises.unlink(path.join(__dirname, 'files', 'delete.txt'));
+
+//     } catch (err) {
+//         console.log(err);
+//     }
+// }
+// fileOps();
+
+
+// // // write a file no need to mention the utf-8
+// // try {
+// //     //const data = fs.readFileSync('./files/starters.txt', 'utf-8');
+// //     const data = fs.writeFileSync(path.join(__dirname, 'files', 'reply.txt'), 'nice to meet you');
+// //     console.log('complete');
+// //     try {
+// //         //const data = fs.readFileSync('./files/starters.txt', 'utf-8');
+// //         const data = fs.appendFileSync(path.join(__dirname, 'files', 'reply.txt'), '\n\n nice to meet you 2');
+// //         console.log('complete');
+// //     } catch (err) {
+// //         console.error(err);
+// //     }
+// // } catch (err) {
+// //     console.error(err);
+// // }
+
+// //  append file no need to mention the utf-8
+
+
+// // fs.writeFile(path.join(__dirname, 'files', 'reply.txt'), 'Nice to meet write', (err) => {
+// //     if (err) throw err;
+// //     console.log('write complete');
+
+// //     fs.appendFile(path.join(__dirname, 'files', 'reply.txt'), '\n\n Yes it is', (err) => {
+// //         if (err) throw err;
+// //         console.log('append complete');
+// //         fs.rename(path.join(__dirname,'files','reply.txt'),path.join(__dirname,'files','newreply.txt'),(err)=>{
+// //             if (err) throw err;
+// //             console.log('rename completed');
+// //         })
+// //     });
+// // });
+// console.log(new Date(),'yyyyMMdd\tHH:mm:ss');
+// console.log("sample")
+// console.log(uuid());
+
+
+// process.on('uncaughtException', err => {
+//     console.error(`${err}`);
+//     process.exit(1);
+// })
+// // do not use the below code
+// // fs.readFileSync('./files/starter.txt','utf-8',(err,data)=>{
+// //     if (err) throw err;
+// //     console.log(data.toString());
+// //  })
+
