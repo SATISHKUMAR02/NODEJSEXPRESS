@@ -7,6 +7,7 @@ const { logger } = require('./middlewares/logEvent')
 const  errorHandler  = require('./middlewares/errorHandler');
 const { error } = require('console');
 const corsOptions = require("./config/corsOption")
+
 // this will be applied for all the routes 
 // 
 
@@ -28,6 +29,8 @@ app.use('/',require('./routers/root'));
 // app.use('/subdir',require('./routers/subdir'));
 app.use('/employees',require('./routers/api/employee'));
 // the above ones are middlewares so will be applied to all the routes
+app.use('/register',require('./routers/api/register'));
+app.use('/auth',require('./routers/api/auth'));
 
 const one = (req, res, next) => {
     console.log("one");
