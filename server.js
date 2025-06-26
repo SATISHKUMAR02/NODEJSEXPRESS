@@ -6,7 +6,9 @@ const cors = require('cors');
 const { logger } = require('./middlewares/logEvent')
 const  errorHandler  = require('./middlewares/errorHandler');
 const { error } = require('console');
-const corsOptions = require("./config/corsOption")
+const corsOptions = require("./config/corsOption");
+const verifyJwt = require('./middlewares/verifyJwt');
+const cookieParser = require('cookie-parser');
 
 // this will be applied for all the routes 
 // 
@@ -14,7 +16,7 @@ const corsOptions = require("./config/corsOption")
 //custom in middlewares
 app.use(logger);
 
-app.use(cors(corsOptions)); // cross origin resource sharing
+app.use(cors(corsOptions)); // cross origin resource sharingv
 
 
 
@@ -22,15 +24,21 @@ app.use(cors(corsOptions)); // cross origin resource sharing
 app.use(express.urlencoded({ extended: false })); // => this is a middleware which is used when the form data is submitted
 app.use(express.json()); // => this is the same for json data
 // allowing middlewares to subdir and for main 
+app.use(cookieParser()); // this middleware is for cookie parser
 app.use('/',express.static(path.join(__dirname, '/public')));
 app.use('/subdir',express.static(path.join(__dirname, '/public')));
 
 app.use('/',require('./routers/root'));
 // app.use('/subdir',require('./routers/subdir'));
-app.use('/employees',require('./routers/api/employee'));
-// the above ones are middlewares so will be applied to all the routes
 app.use('/register',require('./routers/api/register'));
+app.use('/refresh',require('./routers/api/refresh'));
+
 app.use('/auth',require('./routers/api/auth'));
+app.use(verifyJwt);
+app.use('/employees',require('./routers/api/employee'));
+app.use('/students',require('./routers/api/student'));
+// the above ones are middlewares so will be applied to all the routes
+
 
 const one = (req, res, next) => {
     console.log("one");

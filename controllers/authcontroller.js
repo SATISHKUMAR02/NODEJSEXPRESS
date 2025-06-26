@@ -41,7 +41,7 @@ const handleAuth = async(req,res)=>{
             {
                 "username":exuser.username
             },
-            process.env.ACCESS_TOKEN_SECRET,
+            process.env.REFRESH_TOKEN_SECRET,
             {
                 expiresIn:'1d'
             }
@@ -58,7 +58,7 @@ const handleAuth = async(req,res)=>{
                                                        // one day
         res.cookie('jwt',refreshToken,{httpOnly:true,maxAge:24*60*60*1000});
         return res.json({'success':`user logged in ${user}`,'payload':{
-            'accesstoke':accessToken,
+            'accesstoken':accessToken,
             'refreshtoken':refreshToken
         }}); 
     }else{

@@ -12,4 +12,4 @@ router.get('/old-page.html', (req, res) => {
     res.redirect(301, '/new-page.html');
 })
 
-module.exports = router;
+module.exports = router; 

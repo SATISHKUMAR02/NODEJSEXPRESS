@@ -1,0 +1,10 @@
+type this in terminal
+
+require('crypto').randomBytes(64).toString('hex')
+'4231250aa559e83e00a713a08059b0c6d231fab9d100e1e80aaedb63b123ba2bc5127b88afe9e98d2e09c801ea4b9be394d22cffbac905711f03d429076b968c'
+
+
+bcrypt 
+cookie-parser
+corsjsonwebtoken
+dotenv
