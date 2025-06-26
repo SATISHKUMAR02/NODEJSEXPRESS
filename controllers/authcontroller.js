@@ -1,6 +1,6 @@
 const userDB = {
-    users : require('../model/users.json'),
-    setUsers : function (data){
+    users: require('../model/users.json'),
+    setUsers: function (data) {
         this.users = data;
     }
 }
@@ -14,57 +14,66 @@ require('dotenv').config();
 
 
 
-const handleAuth = async(req,res)=>{
-    const {user,password} = req.body;
-    if(!user || !password){
-        return res.status(400).json({'message':'invalid credentials'});
+const handleAuth = async (req, res) => {
+    const { user, password } = req.body;
+
+    if (!user || !password) {
+        return res.status(400).json({ 'message': 'invalid credentials' });
 
     }
-    const exuser = userDB.users.find(p=>p.username === user);
-    if (!exuser){
-        return res.status(404).json({'message':'usern not found'});
+    const exuser = userDB.users.find(p => p.username === user);
+    if (!exuser) {
+        return res.status(404).json({ 'message': 'usern not found' });
     }
 
-    const match = await bcrypt.compare(password,exuser.password);
-    if(match){
+    const match = await bcrypt.compare(password, exuser.password);
+    if (match) {
+        const roles = Object.values(exuser.roles);
         // creating a JWT here
         const accessToken = jwt.sign(
             {
-                "username":exuser.username
+                "userinfo": {
+                    "username": exuser.username,
+                    "roles": roles
+                }
             },
             process.env.ACCESS_TOKEN_SECRET,
             {
-                expiresIn:'30s'
+                expiresIn: '30s'
             }
         );
-         const refreshToken = jwt.sign(
+        // can send roles in refresh token but not needed since 
+        // refresh token is stored in memory
+        const refreshToken = jwt.sign(
             {
-                "username":exuser.username
+                "username": exuser.username
             },
             process.env.REFRESH_TOKEN_SECRET,
             {
-                expiresIn:'1d'
+                expiresIn: '1d'
             }
         );
 
-        const others = userDB.users.filter(p=>p.username !== exuser.username);
-        const current = {...exuser,refreshToken};
-        userDB.setUsers([...others,current]);
+        const others = userDB.users.filter(p => p.username !== exuser.username);
+        const current = { ...exuser, refreshToken };
+        userDB.setUsers([...others, current]);
 
         await fsPromises.writeFile(
-            path.join(__dirname,'..','model','users.json'),
+            path.join(__dirname, '..', 'model', 'users.json'),
             JSON.stringify(userDB.users)
         );
-                                                       // one day
-        res.cookie('jwt',refreshToken,{httpOnly:true,maxAge:24*60*60*1000});
-        return res.json({'success':`user logged in ${user}`,'payload':{
-            'accesstoken':accessToken,
-            'refreshtoken':refreshToken
-        }}); 
-    }else{
-        res.json({'message':'invalid cred'});
+        // setting a cookie to httpOnly so that it cannot be accessed by Javascript making it more secure                                               // one day
+        res.cookie('jwt', refreshToken, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
+        return res.json({
+            'success': `user logged in ${user}`, 'payload': {
+                'accesstoken': accessToken,
+                'refreshtoken': refreshToken
+            }
+        });
+    } else {
+        res.json({ 'message': 'invalid cred' });
     }
 
 }
 
-module.exports = {handleAuth};
+module.exports = { handleAuth };

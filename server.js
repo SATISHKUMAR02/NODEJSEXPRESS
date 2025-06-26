@@ -32,6 +32,7 @@ app.use('/',require('./routers/root'));
 // app.use('/subdir',require('./routers/subdir'));
 app.use('/register',require('./routers/api/register'));
 app.use('/refresh',require('./routers/api/refresh'));
+app.use('/logout',require('./routers/api/logout'));
 
 app.use('/auth',require('./routers/api/auth'));
 app.use(verifyJwt);
