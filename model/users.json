@@ -22,7 +22,7 @@
 },
 
 
-{"username":"mam","password":"$2b$10$jTtBjsZrFUoa7/NqJ8hBBurWQxqbKxR0ooR0h6tBPXhY3nKGd8Dcy","roles":{
+{"username":"mam","password":"$2b$10$jTtBjsZrFUoa7/NqJ8hBBurWQxqbKxR0ooR0h6tBPXhY3nKGd8Dcy","role s":{
     "User":1000,
     "Admin":5000
 }}]

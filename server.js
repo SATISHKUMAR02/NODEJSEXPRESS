@@ -9,11 +9,14 @@ const { error } = require('console');
 const corsOptions = require("./config/corsOption");
 const verifyJwt = require('./middlewares/verifyJwt');
 const cookieParser = require('cookie-parser');
+const mongoose = require('mongoose');
+const connectDB = require('./config/db');
 
 // this will be applied for all the routes 
 // 
 
 //custom in middlewares
+connectDB();
 app.use(logger);
 
 app.use(cors(corsOptions)); // cross origin resource sharingv
@@ -72,4 +75,8 @@ app.get(/.*/, (req, res) => {
 //     }
 // });
 app.use(errorHandler);
-app.listen(PORT, () => console.log(`server running on port ${PORT}`));
+mongoose.connection.once('open',()=>{
+    console.log("connected to mongoDb");
+    app.listen(PORT, () => console.log(`server running on port ${PORT}`));
+
+})

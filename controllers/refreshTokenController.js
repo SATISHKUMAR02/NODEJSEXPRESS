@@ -1,13 +1,8 @@
-const userDB = {
-    users: require('../model/users.json'),
-    setUsers: function (data) {
-        this.users = data;
-    }
-}
+const User = require('../model/User')
 const jwt = require('jsonwebtoken');
-require('dotenv').config();
+// require('dotenv').config();
 
-const handleRefreshToken = (req, res) => {
+const handleRefreshToken = async (req, res) => {
     const cookies = req.cookies
     if (!cookies?.jwt) {
         return res.status(401).json({
@@ -17,7 +12,7 @@ const handleRefreshToken = (req, res) => {
     console.log(cookies.jwt);
     const refreshToken = cookies.jwt;
     console.log("refresh token")
-    const user = userDB.users.find(p => p.refreshToken === refreshToken);
+    const user = await User.findOne({refreshToken}).exec();
     if (!user) {
         return res.sendStatus(403);
 
@@ -41,7 +36,14 @@ const handleRefreshToken = (req, res) => {
                 {
                     expiresIn: '120s'
                 });
+                user.accessToken = accesstoken;
+                const result = user.save();
+                console.log(result);
+                
+            
             res.json({ accesstoken })
-        });
+
+        }
+    );
 };
 module.exports = { handleRefreshToken }

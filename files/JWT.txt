@@ -8,3 +8,15 @@ bcrypt
 cookie-parser
 corsjsonwebtoken
 dotenv
+
+
+MongoDB = >
+no SQL database
+
+data is stored in collections and individual records are called documents
+
+speed at which a coolection is queried is fast
+flexibility no need to change the complete structure of the tables in SQL , juslt like adding a new property
+
+scalabilty = can support large database with low latency
+

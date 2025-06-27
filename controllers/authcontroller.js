@@ -1,16 +1,7 @@
-const userDB = {
-    users: require('../model/users.json'),
-    setUsers: function (data) {
-        this.users = data;
-    }
-}
-const fsPromises = require('fs').promises;
-const path = require('path');
+const User = require('../model/User');
 const bcrypt = require('bcrypt');
 
 const jwt = require('jsonwebtoken');
-const { json } = require('body-parser');
-require('dotenv').config();
 
 
 
@@ -21,9 +12,9 @@ const handleAuth = async (req, res) => {
         return res.status(400).json({ 'message': 'invalid credentials' });
 
     }
-    const exuser = userDB.users.find(p => p.username === user);
+    const exuser = await User.findOne({"username":user}).exec();
     if (!exuser) {
-        return res.status(404).json({ 'message': 'usern not found' });
+        return res.status(404).json({ 'message': 'user not found' });
     }
 
     const match = await bcrypt.compare(password, exuser.password);
@@ -53,15 +44,10 @@ const handleAuth = async (req, res) => {
                 expiresIn: '1d'
             }
         );
-
-        const others = userDB.users.filter(p => p.username !== exuser.username);
-        const current = { ...exuser, refreshToken };
-        userDB.setUsers([...others, current]);
-
-        await fsPromises.writeFile(
-            path.join(__dirname, '..', 'model', 'users.json'),
-            JSON.stringify(userDB.users)
-        );
+        exuser.accessToken = accessToken;
+        exuser.refreshToken = refreshToken;
+        const result = await exuser.save();
+        console.log(result);
         // setting a cookie to httpOnly so that it cannot be accessed by Javascript making it more secure                                               // one day
         res.cookie('jwt', refreshToken, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
         return res.json({
