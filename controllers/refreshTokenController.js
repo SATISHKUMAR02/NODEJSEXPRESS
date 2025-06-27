@@ -11,16 +11,40 @@ const handleRefreshToken = async (req, res) => {
     }
     console.log(cookies.jwt);
     const refreshToken = cookies.jwt;
+    // refresh token rotation
+    res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', secure: None });
+
     console.log("refresh token")
-    const user = await User.findOne({refreshToken}).exec();
+    const user = await User.findOne({ refreshToken }).exec();
+    // if the user is detected , meaing refresh token reuse
+
     if (!user) {
+        jwt.verify(
+            refreshToken,
+            process.env.REFRESH_TOKEN_SECRET,
+            async (err, decoded) => {
+                if (err) {
+                    return res.sendStatus(403);
+                }
+                const invalidUser = await User.findOne({
+                    username: decoded.username
+                }).exec();
+                invalidUser.refreshToken = [];
+                const result = await invalidUser.save();
+                console.log(result);
+
+            }
+        )
         return res.sendStatus(403);
 
     }
+    const newRefreshTokenArray = user.refreshToken.filter(f => f !== refreshToken);
+
     jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET,
-        (err, decoded) => {
+        async (err, decoded) => {
             if (err) {
-                return res.sendStatus(403);
+                user.refreshToken = [...newRefreshTokenArray];
+                const result = await user.save();
             }
             if (user.username !== decoded.username) {
                 return res.sendStatus(403);
@@ -36,11 +60,23 @@ const handleRefreshToken = async (req, res) => {
                 {
                     expiresIn: '120s'
                 });
-                user.accessToken = accesstoken;
-                const result = user.save();
-                console.log(result);
-                
-            
+            const newrefreshToken = jwt.sign(
+                {
+                    "username": exuser.username
+                },
+                process.env.REFRESH_TOKEN_SECRET,
+                {
+                    expiresIn: '1d'
+                }
+            );
+            user.accessToken = accesstoken;
+            user.refreshToken = [...newRefreshTokenArray, newrefreshToken];
+            res.cookie('jwt', newrefreshToken, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
+
+            const result = user.save();
+            console.log(result);
+
+
             res.json({ accesstoken })
 
         }

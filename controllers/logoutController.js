@@ -13,7 +13,7 @@ if(!user){
     return res.sendStatus(204);
 }
 // delete the refresh token
-user.refreshToken='';
+user.refreshToken=user.refreshToken.filter(f=>f!==refreshToken); //this is for multiple devices of same user
 const result = await user.save();
 console.log(result);
 res.clearCookie('jwt',{httpOnly:true,sameSite:'None',secure:true});
